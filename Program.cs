@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using Topshelf;
 
 namespace YWB.IndigoInjector
@@ -7,24 +8,29 @@ namespace YWB.IndigoInjector
     {
         static void Main(string[] args)
         {
-            Console.InputEncoding = System.Text.Encoding.UTF8;
-            Console.OutputEncoding = System.Text.Encoding.UTF8;
-            HostFactory.Run(x =>
+            try
             {
-                x.Service<Injector>(s =>
-                {
-                    s.ConstructUsing(name => new Injector());
-                    s.WhenStarted(inj => inj.Start());
-                    s.WhenStopped(inj => inj.Stop());
-                });
-                x.RunAsLocalSystem();
-
-                x.SetDescription("Indigo Bookmarks and Extension modifier by Yellow Web");
-                x.SetDisplayName("YWB.IndigoDataInjector");
-                x.SetServiceName("YWB.IndigoDataInjector");
-            });
-
+                var serviceRunner = HostFactory.Run(x =>
+                  {
+                      x.SetStartTimeout(TimeSpan.FromSeconds(30));
+                      x.Service(s => new Injector());
+                      x.OnException(ex =>
+                      {
+                          File.WriteAllText(Path.Combine(Path.GetTempPath(), "YWB.IndigoInjector.log"), ex.ToString());
+                      });
+                      x.RunAsLocalSystem();
+                      x.StartAutomatically();
+                      x.SetDescription("Indigo Bookmarks and Extension modifier by Yellow Web");
+                      x.SetDisplayName("YWB.IndigoDataInjector");
+                      x.SetServiceName("YWB.IndigoDataInjector");
+                  });
+                var exitCode = (int)Convert.ChangeType(serviceRunner, serviceRunner.GetTypeCode());
+                Environment.ExitCode = exitCode;
+            }
+            catch (Exception e)
+            {
+                File.WriteAllText(Path.Combine(Path.GetTempPath(), "YWB.IndigoInjector.log"), e.ToString());
+            }
         }
-
     }
 }
