@@ -16,7 +16,6 @@ namespace YWB.IndigoInjector
         {
             try
             {
-                File.WriteAllText(Path.Combine(Path.GetTempPath(), "YWB.IndigoInjector.log"), "On Start!");
                 _watcher = new FileSystemWatcher(Path.GetTempPath());
                 Console.WriteLine("Indigo Data Injector v1.0 by Yellow Web (https://yellowweb.top)");
                 Console.WriteLine("If you like this software, please, donate!");
