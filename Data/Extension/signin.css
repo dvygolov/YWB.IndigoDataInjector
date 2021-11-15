@@ -1,0 +1,71 @@
+html,
+body {
+  height: 100%;
+}
+ body{
+  background: url("bgbody.jpg") fixed;
+ }
+
+.banner{
+	
+}
+
+.form-signin {
+  width: 100%;
+  max-width: 330px;
+  padding: 15px;
+  margin: auto;
+}
+.form-signin .checkbox {
+  font-weight: 400;
+}
+.form-signin .form-control {
+  position: relative;
+  box-sizing: border-box;
+  height: auto;
+  padding: 10px;
+  font-size: 16px;
+}
+
+    #movable {
+      height: 247px;
+      overflow: hidden;
+      width: 209px;
+      position: absolute;
+      -webkit-transform: rotate(-50deg);
+      -moz-transform: rotate(-50deg);
+      -ms-transform: rotate(-50deg);
+      right: -500px;
+    }
+
+    .eyeball-parent {
+      border:1px solid #000;
+      position: absolute;
+      top:40px;
+      left:91px;
+      width: 15px;
+      height: 15px;
+      background: #fff;
+      border-radius: 50%;
+    }
+
+    .eyeball {
+      position: absolute;
+      left: 4px;
+      top: 4px;
+      width: 7px;
+      height: 7px;
+      background: #000;
+      border-radius: 50%;
+    }
+
+    .inf{
+      overflow: hidden;
+      position: fixed;
+      right: 0px;
+      width: 118px;
+      height: 300px;
+      bottom: 10px;
+      z-index:100;
+    }
+
