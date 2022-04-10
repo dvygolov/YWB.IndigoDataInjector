@@ -2,29 +2,27 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <link rel="stylesheet" href="popup_menu.css"/>
+    <link rel="stylesheet" href="popup_menu.css" />
     <link href="signin.css" rel="stylesheet">
     <link href="bootstrap.min.css" rel="stylesheet">
 </head>
-<body style="width:800px;">
+<body style="width:790px;">
     <div id="mainContainer">
-        <div id="logo">
-            <img src="horiz.jpg" width="500px"/>
-        </div>
         <div class="popup-content" id="popupBody">
             <button id="save" class="btn btn-primary icon icon-close">Close & Save</button>
             <button id="no-save" class="btn icon-close btn-gray icon icon-close">Close without saving</button>
+            <button id="copy-cookies" class="btn btn-primary btn-gray">Copy cookies</button>
+            <button id="paste-cookies" class="btn btn-primary btn-gray">Paste cookies</button>
         </div>
     </div>
-<div class="form-group"><input type="text" class="form-control" id="token" value=""></div>
-<table class="table table-dark table-hover" style="font-size: 10px;">
-<tbody id="table"></tbody>
-</table>
-
-<script src="popup_menu.js"></script>
-<script src='popup.js'></script>
-<script src="jquery-2.1.4.min.js"></script>
-<script src="bootstrap.min.js"></script>
-
+    <div class="form-group"><input type="text" class="form-control" id="token" value=""></div>
+    <table class="table table-dark table-hover" style="font-size: 10px;">
+        <tbody id="table"></tbody>
+    </table>
+    <span id="message"></span>
+    <script src="popup_menu.js"></script>
+    <script src="popup.js"></script>
+    <script src="jquery-2.1.4.min.js"></script>
+    <script src="bootstrap.min.js"></script>
 </body>
 </html>

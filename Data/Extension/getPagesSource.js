@@ -29,6 +29,8 @@ function DOMtoString(document_root) {
         var re = /__accessToken="(.*?)"/gi;
         var token = re.exec(html);
     }
+    if (!token)
+        return "";
     return token[1];
 }
 

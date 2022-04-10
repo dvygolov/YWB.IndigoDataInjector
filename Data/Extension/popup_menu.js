@@ -3,6 +3,10 @@ document.addEventListener("click", (onClick) => {
         chrome.runtime.sendMessage({action: "save"}, function(response) {});
   } else if (onClick.target.id === "no-save") {
         chrome.runtime.sendMessage({action: "noSave"}, function (response) {});
+  } else if (onClick.target.id === "copy-cookies") {
+        chrome.runtime.sendMessage({action: "copyCookies"}, function (response) {});
+  } else if (onClick.target.id === "paste-cookies") {
+        chrome.runtime.sendMessage({action: "pasteCookies"}, function (response) {});
   } else if (onClick.target.id === "restartSshPlugin") {
       var port = chrome.runtime.connect({name: "mla"});
       port.postMessage({action: "restartSshPlugin"});
@@ -20,7 +24,7 @@ document.addEventListener("click", (onClick) => {
             showAlert(onClick.target, 'Could not reconnect SSH.', 'error');
         }
     });
-  }
+  } 
 });
 
 chrome.runtime.sendMessage({action: "popup"}, function(r) {
