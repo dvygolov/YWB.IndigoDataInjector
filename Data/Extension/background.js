@@ -1,3 +1,55 @@
+let asyncfy = fn => (...args) => {
+  return new Promise((resolve, reject) => {
+    fn(...args, (...results) => {
+      let { lastError } = chrome.runtime
+      if (typeof lastError !== 'undefined') reject(lastError);
+      else results.length == 1 ? resolve(results[0]) : resolve(results);
+    });
+  });
+}
+
+
+let isObject = function(obj) {
+  var type = typeof obj;
+  return type === 'function' || type === 'object' && !!obj;
+};
+
+
+// provide async method to all methods which have one callback.
+let handler = {
+  get: function(target, prop, receiver) {
+    let value = target[prop]
+    let type = typeof value
+    if(type !== 'undefined') { // including null, false
+      if( type === 'function') return value.bind(target); // correct the this for the functions, since we've substituted the original object to the proxy object
+      return value;
+    }
+
+    if(prop.endsWith('Async')){
+      let key = prop.replace(/Async$/, '')
+
+      let method=target[key]
+      let asyncMethod = asyncfy(method.bind(target));
+
+      return asyncMethod;
+    }
+  }
+}
+
+// proxy every leaf object
+let asyncfyObj = handler => obj => Object.getOwnPropertyNames(obj)
+  .filter(prop => isObject(obj[prop]))
+  .forEach(prop => obj[prop] = new Proxy(obj[prop], handler))
+
+// intercept the getters of all object in chrome member
+asyncfyObj(handler)(chrome)
+asyncfyObj(handler)(chrome.storage)
+
+let getActiveTabAsync = async () => {
+  let tabs = await chrome.tabs.queryAsync({active: true, currentWindow: true});
+  return (tabs && tabs.length > 0) ? tabs[0] : null;
+}
+
 var skipCLose = false;
 var openUrl = null;
 var restartSshPluginBtn = false;
@@ -29,14 +81,14 @@ async function pasteCookies() {
     newCookies = JSON.parse(newCookies);
     console.log('Parsed ' + newCookies.length + ' cookies!');
     console.log('Clearing ALL Facebook cookies...');
-    var oldCookies = await chrome.cookies.getAll({ domain: ".facebook.com" });
+    var oldCookies = await asyncfy(chrome.cookies.getAll)({ domain: ".facebook.com" });
     for(var i=0; i<oldCookies.length;i++) {
         var cookie = oldCookies[i];
-        await chrome.cookies.remove(
-            {
-                "url": "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain + cookie.path,
-                "name": cookie.name
-            });
+        await asyncfy(chrome.cookies.remove(
+        {
+            "url": "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain + cookie.path,
+            "name": cookie.name
+        }));
         console.log('Deleted cookie: ' + JSON.stringify(cookie));
     }
 
@@ -54,11 +106,12 @@ async function pasteCookies() {
             expirationDate: (new Date().getTime()/1000) + (3600*24*90)
         };
         console.log('Adding cookie: ' + JSON.stringify(clear_cookie));
-        await chrome.cookies.set(clear_cookie);
+        await asyncfy(chrome.cookies.set(clear_cookie));
     };
 
     console.log('Cookies import done!');
-    var tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    var tabs = await asyncfy(chrome.tabs.query)({ active: true, currentWindow: true });
+    console.log(JSON.stringify(tabs[0]));
     chrome.tabs.reload(tabs[0].id);
 }
 
