@@ -25,12 +25,26 @@ html, body {
 #logo{
   width: 100px;
 }
+
 .popup-content {
+  width: 100%;
+  display: flex;
+  align-content: flex-end;
+  padding: 24px 26px;
+}
+
+.cookie-buttons{
   width: 100%;
   display: flex;
   flex-flow: column wrap;
   align-content: flex-end;
-  padding: 24px 26px;
+}
+
+.indigo-buttons{
+  width: 100%;
+  display: flex;
+  flex-flow: column wrap;
+  align-content: flex-end;
 }
 
 .popup-footer {
