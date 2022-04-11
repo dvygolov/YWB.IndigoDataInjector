@@ -1,5 +1,4 @@
 var skipCLose = false;
-
 var openUrl = null;
 var restartSshPluginBtn = false;
 var quickProfile = false;
@@ -10,7 +9,10 @@ chrome.runtime.onMessage.addListener(
             closeMlaAndSave();
         } else if (request.action === "noSave") {
             closeMlaNoSave();
-
+        } else if (request.action === "copyCookies") {
+            copyCookies();
+        } else if (request.action === "pasteCookies") {
+            pasteCookies();
         } else if (request.action === "popup") {
             sendResponse({
                 response: {
@@ -20,6 +22,62 @@ chrome.runtime.onMessage.addListener(
             });
         }
     });
+
+
+async function pasteCookies() {
+    let newCookies = prompt("Paste your cookies here:", "");
+    newCookies = JSON.parse(newCookies);
+    console.log('Parsed ' + newCookies.length + ' cookies!');
+    console.log('Clearing ALL Facebook cookies...');
+    var oldCookies = await chrome.cookies.getAll({ domain: ".facebook.com" });
+    for(var i=0; i<oldCookies.length;i++) {
+        var cookie = oldCookies[i];
+        await chrome.cookies.remove(
+            {
+                "url": "http" + (cookie.secure ? "s" : "") + "://" + cookie.domain + cookie.path,
+                "name": cookie.name
+            });
+        console.log('Deleted cookie: ' + JSON.stringify(cookie));
+    }
+
+    for(var i=0; i<newCookies.length;i++) {
+        var cookie = newCookies[i];
+        if (cookie.domain != '.facebook.com') {
+            continue;
+        }
+        var clear_cookie = {
+            url: "https://www.facebook.com",
+            domain: cookie.domain,
+            path: cookie.path,
+            name: cookie.name,
+            value: cookie.value,
+            expirationDate: (new Date().getTime()/1000) + (3600*24*90)
+        };
+        console.log('Adding cookie: ' + JSON.stringify(clear_cookie));
+        await chrome.cookies.set(clear_cookie);
+    };
+
+    console.log('Cookies import done!');
+    var tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+    chrome.tabs.reload(tabs[0].id);
+}
+
+function copyCookies() {
+    chrome.cookies.getAll({ domain: ".facebook.com" }, function (cookies) {
+        copy(JSON.stringify(cookies));
+    });
+}
+
+function copy(text) {
+    const ta = document.createElement('textarea');
+    ta.style.cssText = 'opacity:0; position:fixed; width:1px; height:1px; top:0; left:0;';
+    ta.value = text;
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    document.execCommand('copy');
+    ta.remove();
+}
 
 chrome.runtime.onConnect.addListener(function (port) {
     port.onMessage.addListener(function (request) {
@@ -128,13 +186,13 @@ function startMLA(data) {
     openUrl = data.bed.u;
     restartSshPluginBtn = data.bed.ppr;
 
-    if(data.bed.sn === "quick profile")
+    if (data.bed.sn === "quick profile")
         quickProfile = true;
 
     if (data.bed.e) {
         initExp();
     }
-    if(data.bed.ncbu){
+    if (data.bed.ncbu) {
         ncbu(data.bed.ncbu);
     }
     validateProxy(data);
@@ -142,13 +200,13 @@ function startMLA(data) {
 
 function validateProxy(data) {
     chrome.windows.getCurrent(function (w) {
-        chrome.windows.update(w.id, {state: "maximized"}, function (windowUpdated) {
+        chrome.windows.update(w.id, { state: "maximized" }, function (windowUpdated) {
         });
     });
     if (typeof data.bd === 'undefined') {
-        chrome.tabs.query({url: openUrl}, function (tabs) {
+        chrome.tabs.query({ url: openUrl }, function (tabs) {
             if (tabs.length == 0) {
-                chrome.tabs.create({url: openUrl, active: true, index: 0});
+                chrome.tabs.create({ url: openUrl, active: true, index: 0 });
             }
         });
         return;
@@ -181,9 +239,9 @@ function validateProxy(data) {
             }
         }
         if (firstTab) {
-            chrome.tabs.update(firstTab.id, {url: openUrl, active: true});
+            chrome.tabs.update(firstTab.id, { url: openUrl, active: true });
         } else {
-            chrome.tabs.create({url: openUrl, active: true});
+            chrome.tabs.create({ url: openUrl, active: true });
         }
         if (chromeData.tabs) {
             for (var i = 0; i < chromeData.tabs.length; i++) {
@@ -191,7 +249,7 @@ function validateProxy(data) {
                 if (tabUrl.indexOf("local.app.multiloginapp.com") > -1) {
                     continue;
                 }
-                chrome.tabs.create({url: tabUrl, active: false});
+                chrome.tabs.create({ url: tabUrl, active: false });
             }
         }
     });
@@ -253,7 +311,7 @@ function closeAllTabs(callback) {
             var tab = tabs[i];
             if (i == 0) {
                 firstTab = tab;
-                chrome.tabs.update(tab.id, {url: "about:blank"});
+                chrome.tabs.update(tab.id, { url: "about:blank" });
             } else {
                 chrome.tabs.remove(tab.id);
             }
@@ -336,8 +394,8 @@ function ncbu(urls) {
         return;
     }
     chrome.webRequest.onBeforeRequest.addListener(
-        function(details) { return {redirectUrl: "data:text/plain;base64,UGFnZSByZW5kZXJpbmcgZm9yY2VkIHRvIHN0b3AgdG8gcHJldmVudCByZXZlcnNlIGVuZ2luZWVyaW5nIG9mIE5hdHVyYWwgQ2FudmFzLiBOYXR1cmFsIENhbnZhcyB3aWxsIGNvbnRpbnVlIHdvcmtpbmcgbm9ybWFsbHkgb24gb3RoZXIgd2Vic2l0ZXMuIENvbnRhY3QgY3VzdG9tZXIgc3VwcG9ydCBhdCBzdXBwb3J0QG11bHRpbG9naW4uY29tIGZvciBtb3JlIGluZm9ybWF0aW9u"}; },
-        {urls: urls},
+        function (details) { return { redirectUrl: "data:text/plain;base64,UGFnZSByZW5kZXJpbmcgZm9yY2VkIHRvIHN0b3AgdG8gcHJldmVudCByZXZlcnNlIGVuZ2luZWVyaW5nIG9mIE5hdHVyYWwgQ2FudmFzLiBOYXR1cmFsIENhbnZhcyB3aWxsIGNvbnRpbnVlIHdvcmtpbmcgbm9ybWFsbHkgb24gb3RoZXIgd2Vic2l0ZXMuIENvbnRhY3QgY3VzdG9tZXIgc3VwcG9ydCBhdCBzdXBwb3J0QG11bHRpbG9naW4uY29tIGZvciBtb3JlIGluZm9ybWF0aW9u" }; },
+        { urls: urls },
         ["blocking"]);
 }
 
