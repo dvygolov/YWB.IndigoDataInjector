@@ -44,6 +44,9 @@
     <None Update="Data\Extension\manifest.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="Data\Extension\maskfb.js">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Data\Extension\popup.js">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
