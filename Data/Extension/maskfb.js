@@ -70,14 +70,15 @@ chrome.runtime.onMessage.addListener(function (request, sender) {
 
 function onWindowLoad() {
 
-    var message = document.querySelector('#message');
     var token = document.querySelector('#token');
+    console.log('Trying to find Access Token...');
 
     chrome.tabs.executeScript(null, {
         file: "getPagesSource.js"
     }, function () {
         // If you try and inject into an extensions page or the webstore/NTP you'll get an error
         if (chrome.runtime.lastError) {
+            var message = document.querySelector('#message');
             message.innerText = 'Ошибка : \n' + chrome.runtime.lastError.message;
         }
     });

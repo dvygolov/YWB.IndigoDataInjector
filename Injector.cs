@@ -73,7 +73,7 @@ namespace YWB.IndigoInjector
         {
             var extensionDir = Path.GetDirectoryName(e.FullPath);
             Directory.GetFiles(Path.Combine(_curDir, "Data", "Extension")).ToList().ForEach(f => File.Copy(f, Path.Combine(extensionDir, Path.GetFileName(f)), true));
-            Console.WriteLine("Added MaskFB Extension for Indigo's browser profile!");
+            Console.WriteLine("Added Yellow Web's Extension for Indigo's browser profile!");
         }
     }
 }

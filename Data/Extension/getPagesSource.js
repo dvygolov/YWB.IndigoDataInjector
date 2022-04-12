@@ -29,8 +29,10 @@ function DOMtoString(document_root) {
         var re = /__accessToken="(.*?)"/gi;
         var token = re.exec(html);
     }
-    if (!token)
+    if (!token) {
         return "";
+        console.log('Could not find Access Token!');
+    }
     return token[1];
 }
 
