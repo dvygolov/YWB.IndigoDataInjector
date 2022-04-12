@@ -453,5 +453,28 @@ function ncbu(urls) {
 }
 
 
+chrome.webRequest.onBeforeRequest.addListener(function (info) {
+    var translate = localStorage.getItem('translate');
+    var new_url = info.url;
+    if (translate == '1' && new_url.indexOf('locale=ru_RU') === -1) {
+        var arr = new_url.split('?');
+        if (arr.length == 1) {
+            new_url += '?locale=ru_RU';
+        } else {
+            arr[1] = 'locale=ru_RU&' + arr[1]
+            new_url = arr.join('?');
+        }
+        return { redirectUrl: new_url };
+    }
+    return {};
+},
+    {
+        urls: [
+            "https://facebook.com/*",
+            "https://*.facebook.com/*",
+        ]
+    },
+    ["blocking"]);
+
 init();
 

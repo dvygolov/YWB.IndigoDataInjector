@@ -65,3 +65,16 @@ function hideAlerts() {
         alerts[0].parentNode.removeChild(alerts[0]);
     }
 }
+
+function InitTranslateView() {
+    document.getElementById('translated_activated').checked = localStorage.getItem('translate') == 1;
+    document.getElementById('translated_activated').addEventListener('change', (event) => {
+        var inUse=event.target.checked ? 1 : 0;
+        console.log('Check changed: '+inUse);
+        localStorage.setItem('translate', inUse);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    InitTranslateView();
+});
