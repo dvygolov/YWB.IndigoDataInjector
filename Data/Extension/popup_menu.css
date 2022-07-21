@@ -21,6 +21,8 @@ html, body {
 
 #mainContainer {
     display: flex;
+    flex-direction: column;
+    padding: 24px 26px;
 }
 
 #logo {
@@ -31,7 +33,6 @@ html, body {
     width: 100%;
     display: flex;
     align-content: flex-end;
-    padding: 24px 26px;
 }
 
 .cookie-buttons {

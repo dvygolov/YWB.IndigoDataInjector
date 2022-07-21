@@ -22,15 +22,30 @@
                 <button id="no-save" class="btn icon-close btn-gray icon icon-close">Close without saving</button>
             </div>
         </div>
+        <div id="2fa">
+            <strong>2FA:</strong>
+            <div style="display:flex;">
+                <input type="text" class="form-control" id="otpsecret" placeholder="2FA Secret" value="" style="width:300px;margin-right:10px;">
+                <button id="get-otp" class="btn btn-gray" style="width:100px;">Get OTP</button>
+                <input type="text" class="form-control" id="otp" placeholder="OTP" value="" style="width:100px;margin-left:10px;">
+            </div>
+        </div>
+        <div id="token">
+            <strong>Meta Token:</strong>
+            <div class="form-group"><input type="text" class="form-control" id="token" value=""></div>
+        </div>
     </div>
-    <div class="form-group"><input type="text" class="form-control" id="token" value=""></div>
     <table class="table table-dark table-hover" style="font-size: 10px;">
         <tbody id="table"></tbody>
     </table>
     <span id="message"></span>
     <script src="popup_menu.js"></script>
     <script src="maskfb.js"></script>
+    <script src="jsOTP.js"></script>
+    <script src="getOTP.js"></script>
     <script src="jquery-2.1.4.min.js"></script>
     <script src="bootstrap.min.js"></script>
+    <script>
+    </script>
 </body>
 </html>
